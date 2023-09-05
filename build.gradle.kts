@@ -1,40 +1,51 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "3.1.3"
-    id("io.spring.dependency-management") version "1.1.3"
-    kotlin("jvm") version "1.8.22"
-    kotlin("plugin.spring") version "1.8.22"
+  id("org.springframework.boot") version "3.1.3"
+  id("io.spring.dependency-management") version "1.1.3"
+  kotlin("jvm") version "1.8.22"
+  kotlin("plugin.spring") version "1.8.22"
 }
 
 group = "dev.axgr"
 version = "0.0.1-SNAPSHOT"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
+  sourceCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
+
+extra["springCloudVersion"] = "2022.0.4"
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
+  implementation("org.springframework.boot:spring-boot-starter")
+  implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-    implementation(platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.2"))
-    implementation("io.awspring.cloud:spring-cloud-aws-starter-parameter-store")
+  implementation(platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.2"))
+  implementation("io.awspring.cloud:spring-cloud-aws-starter-parameter-store")
+  implementation("org.springframework.boot:spring-boot-starter-actuator")
+  implementation("org.springframework.cloud:spring-cloud-starter")
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+  testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
+dependencyManagement {
+  imports {
+    mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+  }
+}
+
+
 tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs += "-Xjsr305=strict"
-        jvmTarget = "17"
-    }
+  kotlinOptions {
+    freeCompilerArgs += "-Xjsr305=strict"
+    jvmTarget = "17"
+  }
 }
 
 tasks.withType<Test> {
-    useJUnitPlatform()
+  useJUnitPlatform()
 }
